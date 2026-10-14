@@ -1,0 +1,6 @@
+# What the test suite needs. Tests use small hand-made statements, so the dataset is not required.
+numpy>=1.26
+pandas>=2.2
+pytest>=8.0
+scikit-learn>=1.4
+scipy>=1.11
