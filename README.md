@@ -24,6 +24,25 @@ Four segments, all stable and confirmed by a second clustering method:
 
 <img src="images/default_by_segment.png" alt="Default rate by segment" width="620">
 
+## Do the segments hold over time?
+
+The same features were built from April to June and from July to September. K-means was fitted on April to June, and July to September customers were assigned with the April–June scaler and centroids.
+
+- **The definitions hold.** A fresh fit on July to September finds the same four segments: adjusted Rand index 0.993 against the carried-forward assignment, with 99.7% of customers in the same segment and matching profiles and names.
+- **Customers move.** 75.0% are in the same segment in both quarters. *Behind on payments* grows from 8% to 14% of customers, mostly from revolvers: 2,051 of them (12.5% of revolvers) fell behind, 83.4% of all newcomers to the segment.
+- **Newcomers are risky, but less than long-standing members:**
+
+| Behind on payments in… | Customers | Default next month |
+|---|---|---|
+| both quarters | 1,740 | 68.0% |
+| July–September only (moved in) | 2,459 | 48.7% |
+| April–June only (caught up) | 800 | 42.0% |
+| neither | 25,001 | 15.7% |
+
+A segment from last quarter still describes what kind of customer someone is, but not their current risk. Re-assigning customers each quarter with fixed centroids is enough; refitting is not needed.
+
+<img src="images/transitions.png" alt="Share of each April–June segment found in each July–September segment" width="620">
+
 ## How the segments were checked
 
 - **Number of segments.** Silhouette and Davies-Bouldin scores both pick four from k = 2 to 9.
@@ -48,9 +67,10 @@ Age, sex and education are left out of the clustering. They differ only a little
 ## Layout
 
 ```
-segments/features.py   statements to behavioural features
+segments/features.py   statements to behavioural features, for any set of months
 segments/cluster.py    choosing k, bootstrap stability, Ward clustering, label matching
 segments/profile.py    segment profiles and names
+segments/over_time.py  carrying segments into a later period, transitions
 notebook.ipynb         the analysis
 tests/                 unit tests on small hand-made statements
 ```
@@ -72,6 +92,7 @@ pytest -q
 - One issuer, in 2005, during a period of rising card debt in Taiwan. The overall default rate (22%) is far higher than in most portfolios today.
 - Six months is a short history; a dormant customer may simply be between purchases.
 - The outcome is default one month ahead, which measures short-term distress rather than lifetime losses.
+- The over-time check covers two adjacent quarters only, and repayment status counts months behind, so some of the stability of *Behind on payments* is built into the status code.
 
 ## License
 
